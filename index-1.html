@@ -1,0 +1,1396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Shubham Edits — Visual Storyteller</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=Playfair+Display:ital@1&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --black: #080808;
+    --deep: #0f0f0f;
+    --card: #141414;
+    --border: #1e1e1e;
+    --gold: #c9a84c;
+    --gold-light: #e8c96a;
+    --white: #f0ece3;
+    --muted: #6b6560;
+    --accent: #ff4d1c;
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  /* GRAIN OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.35;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 4rem;
+    background: linear-gradient(to bottom, rgba(8,8,8,0.95), transparent);
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 0.12em;
+    color: var(--gold);
+  }
+
+  .logo span { color: var(--white); }
+
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 2.5rem;
+  }
+
+  nav ul a {
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 0.82rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: color 0.3s;
+  }
+
+  nav ul a:hover { color: var(--gold); }
+
+  .nav-cta {
+    background: var(--gold);
+    color: var(--black) !important;
+    padding: 0.5rem 1.3rem;
+    font-weight: 500 !important;
+    transition: background 0.3s !important;
+  }
+
+  .nav-cta:hover { background: var(--gold-light) !important; color: var(--black) !important; }
+
+  /* HERO */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 4rem 6rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 70% 40%, rgba(201,168,76,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 60% at 20% 70%, rgba(255,77,28,0.05) 0%, transparent 50%),
+      var(--black);
+  }
+
+  .hero-reel {
+    position: absolute;
+    top: 50%;
+    right: 4rem;
+    transform: translateY(-50%);
+    width: 44%;
+    aspect-ratio: 16/9;
+    border: 1px solid var(--border);
+    background: var(--deep);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    opacity: 0;
+    animation: fadeSlideIn 1s 0.8s forwards;
+  }
+
+  .hero-reel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(201,168,76,0.05), transparent 50%);
+  }
+
+  .reel-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    color: var(--muted);
+  }
+
+  .play-btn {
+    width: 64px; height: 64px;
+    border: 1.5px solid var(--gold);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    color: var(--gold);
+    font-size: 1.4rem;
+    position: relative;
+  }
+
+  .play-btn::after {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+    border: 1px solid rgba(201,168,76,0.2);
+    animation: pulse 2s infinite;
+  }
+
+  .play-btn:hover { background: var(--gold); color: var(--black); transform: scale(1.05); }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 0.6; }
+    50% { transform: scale(1.2); opacity: 0; }
+  }
+
+  .reel-label { font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; }
+
+  .reel-lines {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    display: flex;
+    gap: 1px;
+    height: 4px;
+  }
+
+  .reel-lines span {
+    flex: 1;
+    background: var(--gold);
+    opacity: 0;
+    animation: filmLoad 0.05s forwards;
+  }
+
+  .reel-lines span:nth-child(odd) { background: var(--accent); }
+  .reel-lines span:nth-child(1) { animation-delay: 1.2s; }
+  .reel-lines span:nth-child(2) { animation-delay: 1.25s; }
+  .reel-lines span:nth-child(3) { animation-delay: 1.3s; }
+  .reel-lines span:nth-child(4) { animation-delay: 1.35s; }
+  .reel-lines span:nth-child(5) { animation-delay: 1.4s; }
+  .reel-lines span:nth-child(6) { animation-delay: 1.45s; }
+  .reel-lines span:nth-child(7) { animation-delay: 1.5s; }
+  .reel-lines span:nth-child(8) { animation-delay: 1.55s; }
+
+  @keyframes filmLoad { to { opacity: 1; } }
+
+  .hero-tag {
+    font-size: 0.72rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.2s forwards;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-tag::before {
+    content: '—';
+    margin-right: 0.6rem;
+    color: var(--accent);
+  }
+
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(4.5rem, 8vw, 9rem);
+    line-height: 0.92;
+    letter-spacing: 0.02em;
+    max-width: 55%;
+    position: relative;
+    z-index: 1;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.4s forwards;
+  }
+
+  h1 em {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    color: var(--gold);
+    font-size: 0.85em;
+  }
+
+  .hero-sub {
+    margin-top: 2rem;
+    max-width: 38%;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--muted);
+    position: relative;
+    z-index: 1;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.6s forwards;
+  }
+
+  .hero-actions {
+    margin-top: 2.5rem;
+    display: flex;
+    gap: 1.2rem;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.7s forwards;
+  }
+
+  .btn-primary {
+    background: var(--gold);
+    color: var(--black);
+    border: none;
+    padding: 0.9rem 2.2rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s;
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  }
+
+  .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); }
+
+  .btn-ghost {
+    color: var(--white);
+    text-decoration: none;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    transition: color 0.3s;
+  }
+
+  .btn-ghost::after {
+    content: '→';
+    transition: transform 0.3s;
+  }
+
+  .btn-ghost:hover { color: var(--gold); }
+  .btn-ghost:hover::after { transform: translateX(4px); }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 2.5rem;
+    right: 4rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--muted);
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    z-index: 1;
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 50px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+    animation: scrollAnim 1.5s infinite;
+  }
+
+  @keyframes scrollAnim {
+    0% { transform: scaleY(0); transform-origin: top; }
+    50% { transform: scaleY(1); transform-origin: top; }
+    51% { transform: scaleY(1); transform-origin: bottom; }
+    100% { transform: scaleY(0); transform-origin: bottom; }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(28px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(-50%) translateX(30px); }
+    to { opacity: 1; transform: translateY(-50%) translateX(0); }
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .stat {
+    padding: 2.5rem 3rem;
+    border-right: 1px solid var(--border);
+    transition: background 0.3s;
+  }
+
+  .stat:last-child { border-right: none; }
+  .stat:hover { background: var(--deep); }
+
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3.2rem;
+    color: var(--gold);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 0.4rem;
+  }
+
+  /* SERVICES */
+  #services {
+    padding: 8rem 4rem;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 4rem;
+  }
+
+  .section-tag {
+    font-size: 0.7rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.8rem;
+  }
+
+  h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.8rem, 5vw, 4.5rem);
+    line-height: 0.95;
+    letter-spacing: 0.03em;
+  }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .service-card {
+    background: var(--deep);
+    padding: 2.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.4s;
+    cursor: default;
+  }
+
+  .service-card::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transition: transform 0.4s;
+    transform-origin: left;
+  }
+
+  .service-card:hover { background: var(--card); }
+  .service-card:hover::before { transform: scaleX(1); }
+
+  .service-icon {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    display: block;
+  }
+
+  .service-card h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 0.05em;
+    margin-bottom: 1rem;
+  }
+
+  .service-card p {
+    font-size: 0.88rem;
+    line-height: 1.7;
+    color: var(--muted);
+  }
+
+  .service-num {
+    position: absolute;
+    top: 2rem; right: 2rem;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 4rem;
+    color: var(--border);
+    line-height: 1;
+    transition: color 0.4s;
+  }
+
+  .service-card:hover .service-num { color: rgba(201,168,76,0.12); }
+
+  /* PORTFOLIO */
+  #portfolio {
+    padding: 6rem 4rem;
+    background: var(--deep);
+  }
+
+  .portfolio-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-rows: 260px 260px;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-top: 3rem;
+  }
+
+  .portfolio-item {
+    background: var(--card);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .portfolio-item:first-child {
+    grid-row: span 2;
+  }
+
+  .portfolio-item-bg {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+    opacity: 0.08;
+    transition: opacity 0.4s, transform 0.6s;
+  }
+
+  .portfolio-item:hover .portfolio-item-bg { opacity: 0.15; transform: scale(1.1); }
+
+  .portfolio-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 60%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 1.8rem;
+    transform: translateY(40%);
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .portfolio-item:hover .portfolio-overlay { transform: translateY(0); }
+
+  .portfolio-type {
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.4rem;
+  }
+
+  .portfolio-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 0.05em;
+  }
+
+  .port-accent-1 { background: linear-gradient(135deg, #1a1208 0%, #0f0f0f 100%); }
+  .port-accent-2 { background: linear-gradient(135deg, #12090d 0%, #0f0f0f 100%); }
+  .port-accent-3 { background: linear-gradient(135deg, #080f18 0%, #0f0f0f 100%); }
+  .port-accent-4 { background: linear-gradient(135deg, #0a1208 0%, #0f0f0f 100%); }
+  .port-accent-5 { background: linear-gradient(135deg, #16100a 0%, #0f0f0f 100%); }
+
+  /* PROCESS */
+  #process {
+    padding: 8rem 4rem;
+  }
+
+  .process-steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    margin-top: 4rem;
+    position: relative;
+  }
+
+  .process-steps::before {
+    content: '';
+    position: absolute;
+    top: 2rem;
+    left: 2rem;
+    right: 2rem;
+    height: 1px;
+    background: linear-gradient(to right, var(--gold), var(--border), var(--gold));
+  }
+
+  .step {
+    padding: 0 2rem;
+    padding-top: 5rem;
+    position: relative;
+  }
+
+  .step-dot {
+    position: absolute;
+    top: calc(2rem - 5px);
+    left: 2rem;
+    width: 10px; height: 10px;
+    border: 1.5px solid var(--gold);
+    border-radius: 50%;
+    background: var(--black);
+  }
+
+  .step-dot::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 4px; height: 4px;
+    background: var(--gold);
+    border-radius: 50%;
+  }
+
+  .step-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.95rem;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+    margin-bottom: 0.8rem;
+  }
+
+  .step h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.8rem;
+  }
+
+  .step p {
+    font-size: 0.85rem;
+    line-height: 1.7;
+    color: var(--muted);
+  }
+
+  /* TOOLS */
+  #tools {
+    padding: 4rem;
+    background: var(--deep);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 4rem;
+  }
+
+  .tools-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .tools-track {
+    flex: 1;
+    overflow: hidden;
+    -webkit-mask: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+  }
+
+  .tools-list {
+    display: flex;
+    gap: 3rem;
+    animation: marquee 18s linear infinite;
+    width: max-content;
+  }
+
+  .tool-chip {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.82rem;
+    letter-spacing: 0.08em;
+    color: var(--white);
+    white-space: nowrap;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+  }
+
+  .tool-chip:hover { opacity: 1; }
+
+  .tool-chip span {
+    color: var(--gold);
+    font-size: 1rem;
+  }
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* TESTIMONIALS */
+  #testimonials {
+    padding: 8rem 4rem;
+  }
+
+  .testimonial-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+
+  .testimonial {
+    background: var(--deep);
+    border: 1px solid var(--border);
+    padding: 2rem;
+    position: relative;
+    transition: border-color 0.3s;
+  }
+
+  .testimonial:hover { border-color: rgba(201,168,76,0.3); }
+
+  .testimonial::before {
+    content: '"';
+    font-family: 'Playfair Display', serif;
+    font-size: 5rem;
+    color: var(--gold);
+    opacity: 0.2;
+    position: absolute;
+    top: 0.5rem; left: 1.5rem;
+    line-height: 1;
+  }
+
+  .testimonial p {
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+    padding-top: 1.5rem;
+  }
+
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border-top: 1px solid var(--border);
+    padding-top: 1.2rem;
+  }
+
+  .author-avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.8rem;
+    color: var(--gold);
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 0.05em;
+  }
+
+  .author-name {
+    font-size: 0.82rem;
+    font-weight: 500;
+  }
+
+  .author-role {
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+
+  .stars {
+    margin-left: auto;
+    color: var(--gold);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+  }
+
+  /* CTA */
+  #cta {
+    padding: 8rem 4rem;
+    background: var(--deep);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  #cta::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(201,168,76,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  #cta h2 {
+    font-size: clamp(3rem, 6vw, 6rem);
+    max-width: 800px;
+    margin: 0 auto 1.5rem;
+    position: relative;
+  }
+
+  #cta p {
+    color: var(--muted);
+    max-width: 500px;
+    margin: 0 auto 3rem;
+    line-height: 1.7;
+  }
+
+  .cta-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .cta-note {
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 1.5rem;
+    letter-spacing: 0.08em;
+  }
+
+  /* CONTACT FORM */
+  #contact {
+    padding: 8rem 4rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+  }
+
+  .contact-info h2 {
+    font-size: clamp(2.5rem, 4vw, 3.5rem);
+    margin-bottom: 1.5rem;
+  }
+
+  .contact-info p {
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 3rem;
+    max-width: 380px;
+  }
+
+  .contact-links {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .contact-link {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-decoration: none;
+    color: var(--white);
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border);
+    transition: color 0.3s;
+  }
+
+  .contact-link:hover { color: var(--gold); }
+
+  .link-icon { color: var(--gold); font-size: 1.1rem; width: 1.5rem; }
+  .link-label { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 0.2rem; }
+  .link-val { font-size: 0.92rem; }
+
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  input, textarea, select {
+    background: var(--deep);
+    border: 1px solid var(--border);
+    color: var(--white);
+    padding: 0.9rem 1.1rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.3s;
+    width: 100%;
+    resize: none;
+    appearance: none;
+  }
+
+  input:focus, textarea:focus, select:focus { border-color: var(--gold); }
+
+  textarea { min-height: 120px; }
+
+  select option { background: var(--deep); }
+
+  .form-submit {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .form-note {
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2.5rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-copy {
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+
+  .footer-socials {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  .footer-socials a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: color 0.3s;
+  }
+
+  .footer-socials a:hover { color: var(--gold); }
+
+  /* SCROLL REVEAL */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s, transform 0.7s;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* CURSOR */
+  .cursor-dot {
+    position: fixed;
+    width: 8px; height: 8px;
+    background: var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 10000;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s;
+  }
+
+  .cursor-ring {
+    position: fixed;
+    width: 32px; height: 32px;
+    border: 1px solid rgba(201,168,76,0.5);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 10000;
+    transform: translate(-50%, -50%);
+    transition: all 0.15s ease-out;
+  }
+
+  @media (max-width: 900px) {
+    nav { padding: 1.2rem 2rem; }
+    nav ul { display: none; }
+    #hero { padding: 0 2rem 5rem; }
+    h1 { max-width: 100%; font-size: clamp(3.5rem, 11vw, 6rem); }
+    .hero-reel { display: none; }
+    .hero-sub { max-width: 100%; }
+    .stats-bar { grid-template-columns: repeat(2,1fr); }
+    #services, #portfolio, #process, #testimonials, #cta, #contact { padding: 5rem 2rem; }
+    .services-grid, .testimonial-grid { grid-template-columns: 1fr; }
+    .portfolio-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+    .portfolio-item:first-child { grid-row: span 1; }
+    .process-steps { grid-template-columns: 1fr 1fr; gap: 3rem; }
+    .process-steps::before { display: none; }
+    #contact { grid-template-columns: 1fr; gap: 3rem; }
+    .form-row { grid-template-columns: 1fr; }
+    #tools { flex-direction: column; gap: 1.5rem; }
+    footer { flex-direction: column; gap: 1rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor-dot" id="dot"></div>
+<div class="cursor-ring" id="ring"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">Shubham<span>Edits</span></div>
+  <ul>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#portfolio">Work</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#contact" class="nav-cta">Let's Talk</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-reel">
+    <div class="reel-inner">
+      <div class="play-btn">▶</div>
+      <span class="reel-label">Watch Showreel 2025</span>
+    </div>
+    <div class="reel-lines">
+      <span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span>
+    </div>
+  </div>
+  <div class="hero-tag">Video Editor & Visual Storyteller</div>
+  <h1>Visuals That <em>Move</em> People</h1>
+  <p class="hero-sub">Crafting cinematic edits, brand films, and reels that make clients stop scrolling — and start buying.</p>
+  <div class="hero-actions">
+    <a href="#contact" class="btn-primary">Book a Project</a>
+    <a href="#portfolio" class="btn-ghost">View Work</a>
+  </div>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    Scroll
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat reveal">
+    <div class="stat-num">50+</div>
+    <div class="stat-label">Projects Delivered</div>
+  </div>
+  <div class="stat reveal">
+    <div class="stat-num">30+</div>
+    <div class="stat-label">Happy Clients</div>
+  </div>
+  <div class="stat reveal">
+    <div class="stat-num">3M+</div>
+    <div class="stat-label">Views Generated</div>
+  </div>
+  <div class="stat reveal">
+    <div class="stat-num">24h</div>
+    <div class="stat-label">Avg Turnaround</div>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="section-header reveal">
+    <div>
+      <div class="section-tag">What I Offer</div>
+      <h2>Services Built<br>to Convert</h2>
+    </div>
+  </div>
+  <div class="services-grid">
+    <div class="service-card reveal">
+      <span class="service-icon">🎬</span>
+      <div class="service-num">01</div>
+      <h3>Short-Form Reels</h3>
+      <p>Viral-ready Reels, Shorts & TikToks engineered for retention. Fast cuts, trending audio, storytelling that hooks in the first second.</p>
+    </div>
+    <div class="service-card reveal">
+      <span class="service-icon">🎥</span>
+      <div class="service-num">02</div>
+      <h3>Brand & Ad Films</h3>
+      <p>Cinematic brand videos, product showcases and ads that communicate your value in under 60 seconds with maximum impact.</p>
+    </div>
+    <div class="service-card reveal">
+      <span class="service-icon">🎞</span>
+      <div class="service-num">03</div>
+      <h3>YouTube Editing</h3>
+      <p>Long-form content with tight pacing, motion graphics, captions and thumbnails — to grow your channel and reduce viewer drop-off.</p>
+    </div>
+    <div class="service-card reveal">
+      <span class="service-icon">✨</span>
+      <div class="service-num">04</div>
+      <h3>Motion Graphics</h3>
+      <p>Animated text, logo stings, lower thirds and custom transitions that add production value to every frame.</p>
+    </div>
+    <div class="service-card reveal">
+      <span class="service-icon">🎓</span>
+      <div class="service-num">05</div>
+      <h3>Educational Content</h3>
+      <p>Clean, focused edits for online courses, explainer videos and tutorials that keep learners engaged from start to finish.</p>
+    </div>
+    <div class="service-card reveal">
+      <span class="service-icon">🎊</span>
+      <div class="service-num">06</div>
+      <h3>Event Highlights</h3>
+      <p>Wedding films, corporate events and celebrations turned into lasting memories with cinematic colour grading and music.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PORTFOLIO -->
+<section id="portfolio">
+  <div class="section-header reveal">
+    <div>
+      <div class="section-tag">Selected Work</div>
+      <h2>Recent Projects</h2>
+    </div>
+    <a href="#contact" class="btn-ghost">All Projects</a>
+  </div>
+  <div class="portfolio-grid reveal">
+    <div class="portfolio-item port-accent-1">
+      <div class="portfolio-item-bg">🎬</div>
+      <div class="portfolio-overlay">
+        <div class="portfolio-type">Brand Film</div>
+        <div class="portfolio-title">Fashion Launch Campaign</div>
+      </div>
+    </div>
+    <div class="portfolio-item port-accent-2">
+      <div class="portfolio-item-bg">📱</div>
+      <div class="portfolio-overlay">
+        <div class="portfolio-type">Reels Pack</div>
+        <div class="portfolio-title">Lifestyle Creator Edits</div>
+      </div>
+    </div>
+    <div class="portfolio-item port-accent-3">
+      <div class="portfolio-item-bg">🎓</div>
+      <div class="portfolio-overlay">
+        <div class="portfolio-type">YouTube</div>
+        <div class="portfolio-title">EdTech Channel Series</div>
+      </div>
+    </div>
+    <div class="portfolio-item port-accent-4">
+      <div class="portfolio-item-bg">✨</div>
+      <div class="portfolio-overlay">
+        <div class="portfolio-type">Motion Graphics</div>
+        <div class="portfolio-title">SaaS Product Explainer</div>
+      </div>
+    </div>
+    <div class="portfolio-item port-accent-5">
+      <div class="portfolio-item-bg">🎊</div>
+      <div class="portfolio-overlay">
+        <div class="portfolio-type">Event Film</div>
+        <div class="portfolio-title">Corporate Gala Highlights</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TOOLS MARQUEE -->
+<div id="tools">
+  <div class="tools-label">Tools I Use</div>
+  <div class="tools-track">
+    <div class="tools-list">
+      <div class="tool-chip"><span>✦</span> Final Cut Pro</div>
+      <div class="tool-chip"><span>✦</span> Adobe Premiere Pro</div>
+      <div class="tool-chip"><span>✦</span> After Effects</div>
+      <div class="tool-chip"><span>✦</span> DaVinci Resolve</div>
+      <div class="tool-chip"><span>✦</span> CapCut</div>
+      <div class="tool-chip"><span>✦</span> Photoshop</div>
+      <div class="tool-chip"><span>✦</span> Canva Pro</div>
+      <div class="tool-chip"><span>✦</span> Final Cut Pro</div>
+      <div class="tool-chip"><span>✦</span> Adobe Premiere Pro</div>
+      <div class="tool-chip"><span>✦</span> After Effects</div>
+      <div class="tool-chip"><span>✦</span> DaVinci Resolve</div>
+      <div class="tool-chip"><span>✦</span> CapCut</div>
+      <div class="tool-chip"><span>✦</span> Photoshop</div>
+      <div class="tool-chip"><span>✦</span> Canva Pro</div>
+    </div>
+  </div>
+</div>
+
+<!-- PROCESS -->
+<section id="process">
+  <div class="section-header reveal">
+    <div>
+      <div class="section-tag">How It Works</div>
+      <h2>Simple Process,<br>Stunning Results</h2>
+    </div>
+  </div>
+  <div class="process-steps">
+    <div class="step reveal">
+      <div class="step-dot"></div>
+      <div class="step-num">01 — Brief</div>
+      <h3>Discovery Call</h3>
+      <p>We discuss your goals, audience, style references and timeline. No jargon, just clarity.</p>
+    </div>
+    <div class="step reveal">
+      <div class="step-dot"></div>
+      <div class="step-num">02 — Create</div>
+      <h3>First Cut Delivery</h3>
+      <p>You receive a full first draft within 24–48 hours. Fast, focused, and already close to final.</p>
+    </div>
+    <div class="step reveal">
+      <div class="step-dot"></div>
+      <div class="step-num">03 — Refine</div>
+      <h3>Revisions & Polish</h3>
+      <p>Up to 2 rounds of revisions included. Colour grade, audio mix, captions — all fine-tuned.</p>
+    </div>
+    <div class="step reveal">
+      <div class="step-dot"></div>
+      <div class="step-num">04 — Deliver</div>
+      <h3>Final Export</h3>
+      <p>Platform-optimised files delivered via Google Drive or WeTransfer. Ready to upload instantly.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="section-header reveal">
+    <div>
+      <div class="section-tag">Client Love</div>
+      <h2>What People Say</h2>
+    </div>
+  </div>
+  <div class="testimonial-grid">
+    <div class="testimonial reveal">
+      <p>The reel Shubham edited went viral within 48 hours. Over 200k views and 3x increase in inquiries. Absolute game changer for my brand.</p>
+      <div class="testimonial-author">
+        <div class="author-avatar">AS</div>
+        <div>
+          <div class="author-name">Aanya Sharma</div>
+          <div class="author-role">Fashion Creator</div>
+        </div>
+        <div class="stars">★★★★★</div>
+      </div>
+    </div>
+    <div class="testimonial reveal">
+      <p>Fast, professional, and genuinely understands brand tone. Our product video got more engagement than any we'd done before. Highly recommend.</p>
+      <div class="testimonial-author">
+        <div class="author-avatar">RK</div>
+        <div>
+          <div class="author-name">Rohan Kapoor</div>
+          <div class="author-role">Startup Founder</div>
+        </div>
+        <div class="stars">★★★★★</div>
+      </div>
+    </div>
+    <div class="testimonial reveal">
+      <p>Incredible attention to detail. Every cut felt intentional. My YouTube channel grew from 2k to 18k subscribers in 4 months.</p>
+      <div class="testimonial-author">
+        <div class="author-avatar">PM</div>
+        <div>
+          <div class="author-name">Priya Mehta</div>
+          <div class="author-role">YouTuber & Educator</div>
+        </div>
+        <div class="stars">★★★★★</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<section id="cta">
+  <div class="section-tag reveal">Ready to Begin?</div>
+  <h2 class="reveal">Let's Create<br><em style="font-family:'Playfair Display',serif;font-style:italic;color:var(--gold)">Something Unforgettable</em></h2>
+  <p class="reveal">Slots are limited. Reach out today and let's build content that works while you sleep.</p>
+  <div class="cta-actions reveal">
+    <a href="#contact" class="btn-primary">Start a Project</a>
+    <a href="https://wa.me/919999999999" class="btn-ghost">WhatsApp Me</a>
+  </div>
+  <p class="cta-note reveal">Response within 2 hours · Free first consultation · Flexible pricing</p>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-info reveal">
+    <div class="section-tag">Get In Touch</div>
+    <h2>Let's Build<br>Together</h2>
+    <p>Tell me about your project — I'll get back to you within 2 hours with a personalised plan and pricing.</p>
+    <div class="contact-links">
+      <a href="mailto:hello@shubhamedits.com" class="contact-link">
+        <span class="link-icon">✉</span>
+        <div>
+          <span class="link-label">Email</span>
+          <span class="link-val">hello@shubhamedits.com</span>
+        </div>
+      </a>
+      <a href="https://wa.me/919999999999" class="contact-link">
+        <span class="link-icon">📱</span>
+        <div>
+          <span class="link-label">WhatsApp</span>
+          <span class="link-val">+91 99999 99999</span>
+        </div>
+      </a>
+      <a href="https://instagram.com/shubhamedits" class="contact-link">
+        <span class="link-icon">📸</span>
+        <div>
+          <span class="link-label">Instagram</span>
+          <span class="link-val">@shubhamedits</span>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <form class="contact-form reveal" onsubmit="handleSubmit(event)">
+    <div class="form-row">
+      <div class="form-group">
+        <label for="name">Your Name</label>
+        <input type="text" id="name" placeholder="Rahul Gupta" required />
+      </div>
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" placeholder="rahul@brand.com" required />
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="service">Service Needed</label>
+      <select id="service">
+        <option value="">Select a service...</option>
+        <option>Short-Form Reels</option>
+        <option>Brand & Ad Film</option>
+        <option>YouTube Editing</option>
+        <option>Motion Graphics</option>
+        <option>Educational Content</option>
+        <option>Event Highlights</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="budget">Budget Range</label>
+        <select id="budget">
+          <option value="">Select range...</option>
+          <option>₹2,000 – ₹5,000</option>
+          <option>₹5,000 – ₹15,000</option>
+          <option>₹15,000 – ₹30,000</option>
+          <option>₹30,000+</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="deadline">Deadline</label>
+        <input type="text" id="deadline" placeholder="e.g. Within 1 week" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="message">Project Details</label>
+      <textarea id="message" placeholder="Tell me about your project, platform, audience, style references..."></textarea>
+    </div>
+    <div class="form-submit">
+      <span class="form-note">Free quote · No commitment</span>
+      <button type="submit" class="btn-primary" id="submitBtn">Send Message</button>
+    </div>
+  </form>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="logo">Shubham<span>Edits</span></div>
+  <div class="footer-copy">© 2025 ShubhamEdits. All rights reserved.</div>
+  <div class="footer-socials">
+    <a href="#">Instagram</a>
+    <a href="#">YouTube</a>
+    <a href="#">LinkedIn</a>
+    <a href="#">WhatsApp</a>
+  </div>
+</footer>
+
+<script>
+  // Custom cursor
+  const dot = document.getElementById('dot');
+  const ring = document.getElementById('ring');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    dot.style.left = mx + 'px';
+    dot.style.top = my + 'px';
+  });
+
+  function animRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animRing);
+  }
+  animRing();
+
+  document.querySelectorAll('a,button').forEach(el => {
+    el.addEventListener('mouseenter', () => ring.style.transform = 'translate(-50%,-50%) scale(1.8)');
+    el.addEventListener('mouseleave', () => ring.style.transform = 'translate(-50%,-50%) scale(1)');
+  });
+
+  // Scroll reveal
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 60);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Form submit
+  function handleSubmit(e) {
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    btn.textContent = 'Sending...';
+    btn.style.opacity = '0.7';
+    setTimeout(() => {
+      btn.textContent = '✓ Message Sent!';
+      btn.style.background = '#4caf50';
+      btn.style.opacity = '1';
+      e.target.reset();
+      setTimeout(() => {
+        btn.textContent = 'Send Message';
+        btn.style.background = '';
+      }, 3000);
+    }, 1200);
+  }
+</script>
+</body>
+</html>
